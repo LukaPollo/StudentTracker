@@ -2,4 +2,43 @@
 bekeres. az osztalyt viszont felkene . osztaly viszont ajanljuk fel az adatbazisba felvit osztalyokbol (auto complete dropdown) .. 
 kell vegpont -> get all students,  /student/id, student/delete, student/post, student/put, diakok tobb tablazat osztalyokra szedve,
 a diakok a tablaban modosithatoak legyenek.
- 
+
+NodeJS alkalmazás elkészítése, tanulók nyilvántartására. Kettő oldalból álljon:
+
+- egy regisztrációs oldalon lehessen felvinni a tanulók neveit és osztályba sorolni őket
+
+- egy listaoldalon listázzuk ki a tanulókat, osztályonként csoportba szedve és mindegyik sor mellett legyen egy szerkesztés gomb, amivel a tanuló nevét tudjuk szerkeszteni és egy törlés gomb, amivel tudjuk törölni
+
+
+
+A http(s)://localhost:3000/ cím a regisztrációs oldalt adja vissza, a http(s)://localhost:3000/students/ útvonal pedig a listaoldalt!
+
+Technikai részletek:
+
+
+
+Legyen 2 tábla:
+
+- 1. student
+
+- 2. subject (one to many kapcsolat, legyen foreign key a student-ben)
+
+
+
+A regisztrációs formon be kell kérni a nevet és a tanuló osztályát. Az osztályt a már felvitt osztályok közül is ki lehessen választani, de újat is fel lehessen venni (auto complete dropdown  mező ajánlott, de kettő külön mezővel is elfogadom -> input[text], html select)!
+
+A submit gomb AJAX kéréssel mentse el a tanulót és az osztályát, ennek a REST API végpontja [POST] -> http(s)://localhost:3000/student/
+
+
+
+A listaoldalon lévő funkciók végpontjai:
+
+- Törlés: [DELETE] -> http(s)://localhost:3000/student/{id}
+
+- Szerkesztés: [PUT] -> http(s)://localhost:3000/student/{id}
+
+
+
+A listaoldalon a táblázatokat egy AJAX kéréssel szolgáljuk ki adattal, ennek a végpontja [GET] -> http(s)://localhost:3000/students/
+
+A listaoldalon is AJAX hívással működjön a szerkesztés és a törlés. Az adatbázis táblákban legyen int ID a PRIMARY KEY
