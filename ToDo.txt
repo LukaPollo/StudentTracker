@@ -1,0 +1,5 @@
+2 tabla egy student egy subject -> feladat -> one to many kapcsolat. nodejs feltolteni vissza ad html formot, a html formorol nev, osztaly 
+bekeres. az osztalyt viszont felkene . osztaly viszont ajanljuk fel az adatbazisba felvit osztalyokbol (auto complete dropdown) .. 
+kell vegpont -> get all students,  /student/id, student/delete, student/post, student/put, diakok tobb tablazat osztalyokra szedve,
+a diakok a tablaban modosithatoak legyenek.
+ 
