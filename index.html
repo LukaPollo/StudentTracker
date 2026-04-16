@@ -1,16 +1,63 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Student Tracker</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Student Tracker</title>
 </head>
 <body>
+  <form id="form">
+    <label for="name">Name:</label><br />
+    <input list="names" type="text" id="name" name="name" /><br />
+    <datalist id="names">
+      <option value=""></option>
+      <option value=""></option>
+    </datalist>
 
-    
+    <label for="class">Class:</label><br />
+    <input list="classes" type="text" id="class" name="class" /><br />
+    <datalist id="classes">
+      <option id="" value=""></option>
+      <option id="" value=""></option>
+    </datalist>
 
-    <script>
+    <br />
+    <button type="submit">Submit</button>
+  </form>
 
-    </script>
+  <script>
+    document.getElementById('form').addEventListener('submit', function (e) {
+      const name = document.getElementById('name').value;
+      if (name === '') {
+        alert('Must enter a name!');
+      }
+    });
+
+    const form = document.getElementById('form');
+    form.addEventListener('submit', (event) => {
+        event.preventDefault();
+
+        const name = document.getElementById('name').value;
+        const classname = document.getElementById('class').value;
+
+        const data = {
+            name, 
+            classname
+        };
+
+        fetch('/reg', {
+            method: 'POST',
+            headers: {
+                'Content-Type' : 'application/json'
+            },
+            body: JSON.stringify(data)
+        })
+        .then(response => response.json())
+        .then(data => console.log(data))
+        .catch(error => console.error(error))
+    });
+  </script>
 </body>
 </html>
+
+
