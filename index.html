@@ -5,59 +5,94 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Student Tracker</title>
 </head>
+
 <body>
+  <a href="/students">Students list</a>
+
+  <br>
+
   <form id="form">
-    <label for="name">Name:</label><br />
-    <input list="names" type="text" id="name" name="name" /><br />
-    <datalist id="names">
-      <option value=""></option>
-      <option value=""></option>
-    </datalist>
+    <label for="name">Name:</label><br>
+    <input list="names" type="text" id="name" name="name" /><br>
+    <datalist id="names"></datalist>
 
-    <label for="class">Class:</label><br />
-    <input list="classes" type="text" id="class" name="class" /><br />
-    <datalist id="classes">
-      <option id="" value=""></option>
-      <option id="" value=""></option>
-    </datalist>
+    <label for="class">Class:</label><br>
+    <input list="classes" type="text" id="class" name="class" /><br>
+    <datalist id="classes"></datalist>
 
-    <br />
+    <label for="classSelect">Existing classes:</label><br>
+    <select id="classSelect" name="classSelect">
+      <option value="">Choose a class</option>
+    </select>
+
+    <br>
+    <br>
+
     <button type="submit">Submit</button>
   </form>
 
   <script>
-    document.getElementById('form').addEventListener('submit', function (e) {
-      const name = document.getElementById('name').value;
-      if (name === '') {
-        alert('Must enter a name!');
-      }
-    });
-
     const form = document.getElementById('form');
-    form.addEventListener('submit', (event) => {
-        event.preventDefault();
+    const classInput = document.getElementById('class');
+    const classSelect = document.getElementById('classSelect');
+    const classes = document.getElementById('classes');
 
-        const name = document.getElementById('name').value;
-        const classname = document.getElementById('class').value;
+    loadSubjects();
 
-        const data = {
-            name, 
-            classname
-        };
-
-        fetch('/reg', {
-            method: 'POST',
-            headers: {
-                'Content-Type' : 'application/json'
-            },
-            body: JSON.stringify(data)
-        })
-        .then(response => response.json())
-        .then(data => console.log(data))
-        .catch(error => console.error(error))
+    classSelect.addEventListener('change', function () {
+      classInput.value = classSelect.value;
     });
+
+    form.addEventListener('submit', function (e) {
+      e.preventDefault();
+
+      const name = document.getElementById('name').value.trim();
+      const classname = classInput.value.trim();
+
+      if (name === '') {
+        alert('Cant be empty');
+        return;
+      }
+
+      if (classname === '') {
+        alert('Cant be ampty');
+        return;
+      }
+
+      fetch('/student', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          name: name,
+          subject: classname
+        })
+      })
+        .then(response => response.json())
+        .then(() => {
+          form.reset();
+          loadSubjects();
+        });
+    });
+
+    function loadSubjects() {
+      fetch('/subjects')
+        .then(response => response.json())
+        .then(subjects => {
+          let datalistHtml = '';
+          let selectHtml = '<option value="">Choose a class</option>';
+
+          subjects.forEach(subject => {
+            datalistHtml += '<option value="' + subject.name + '"></option>';
+            selectHtml += '<option value="' + subject.name + '">' + subject.name + '</option>';
+          });
+
+          classes.innerHTML = datalistHtml;
+          classSelect.innerHTML = selectHtml;
+        });
+    }
+
   </script>
 </body>
 </html>
-
-

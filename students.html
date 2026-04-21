@@ -1,15 +1,80 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Students Tracker | listaoldal</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Students</title>
 </head>
+
 <body>
+  <a href="/">Registration</a>
 
-    
-    <script>
+  <br>
+  <br>
 
-    </script>
+  <div id="studentList"></div>
+  <script>
+    loadStudents();
+
+    function loadStudents() {
+      fetch('/studentsdata')
+        .then(response => response.json())
+        .then(students => {
+          const studentList = document.getElementById('studentList');
+          const groups = {};
+          let html = '';
+
+          students.forEach(student => {
+            if (!groups[student.subject]) {
+              groups[student.subject] = [];
+            }
+
+            groups[student.subject].push(student);
+          });
+
+          for (const subject in groups) {
+            html += '<h3>' + subject + '</h3>';
+
+            groups[subject].forEach(student => {
+              html += '<div>' + student.name + ' <button onclick="editStudent(' + student.id + ', \'' + student.name.replace(/'/g, "\\'") + '\')">Edit</button> <button onclick="deleteStudent(' + student.id + ')">Delete</button></div>';
+            });
+          }
+
+          studentList.innerHTML = html;
+        });
+    }
+
+    function editStudent(id, currentName) {
+      const newName = prompt('New name:', currentName);
+
+      if (newName === null || newName.trim() === '') {
+        return;
+      }
+
+      fetch('/student/' + id, {
+        method: 'PUT',
+        headers: {
+          'Content-Type': 'application/json'
+        },
+        body: JSON.stringify({
+          name: newName.trim()
+        })
+      })
+        .then(response => response.json())
+        .then(() => {
+          loadStudents();
+        });
+    }
+
+    function deleteStudent(id) {
+      fetch('/student/' + id, {
+        method: 'DELETE'
+      })
+        .then(response => response.json())
+        .then(() => {
+          loadStudents();
+        });
+    }
+  </script>
 </body>
 </html>
